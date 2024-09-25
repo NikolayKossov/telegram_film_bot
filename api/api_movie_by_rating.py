@@ -1,12 +1,13 @@
+import urllib
+
 import requests
-import urllib.parse
+from . import filter_by_rating
 
-from api import film_list
 
-def search_film(cache):
+def movie_by_rating_buffer(cache):
     api_key = "NH65SAF-7M54JB8-KPRQ6DE-28HDAR2"
     name = cache["name"]
-    genres = cache["genres"]
+    rating = cache["rating"]
     pages = cache["pages"]
 
     movie_name = str(name)
@@ -21,12 +22,7 @@ def search_film(cache):
     }
 
     response = requests.get(url, headers=headers)
-
-    if response.status_code != 200:
-        return f"Error: {response.status_code}, {response.text}"
-
     films = response.json()
-    films_list, films_id = film_list.get_film_list(films, genres)
+    films_list = filter_by_rating.get_film_list(films, rating)
 
-    return films_list, films_id
-
+    return films_list
